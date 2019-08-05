@@ -1,0 +1,390 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Jobs-API Documentation",
+        "contact": {
+            "email": "azyav4ikoff@ynadex.by"
+        },
+        "version": "0.0.4"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000/api",
+            "description": "Laravel Swagger API server"
+        }
+    ],
+    "paths": {
+        "/auth/signup": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Create user",
+                "description": "Signup new user and send verification token",
+                "operationId": "createUser",
+                "requestBody": {
+                    "description": "Create user object",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "title": "User signup",
+                                "description": "Model user account",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "fobas2"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "azyav4ikoff@yandex.by"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "123478569"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "example": "123478569"
+                                    },
+                                    "profile": {
+                                        "type": "string",
+                                        "example": "none"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successfully created user!",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/signup/activate/{token}": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Activate user",
+                "description": "Activate new signup user.",
+                "operationId": "activateUser",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "path",
+                        "description": "Veryfication email token",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "This activation token is accepted.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "This activation token is invalid."
+                    }
+                }
+            }
+        },
+        "/auth/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login user into system",
+                "operationId": "loginUser",
+                "requestBody": {
+                    "description": "Create user object",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "title": "User login",
+                                "description": "User login account",
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "azyav4ikoff@yandex.by"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "123478569"
+                                    },
+                                    "remember_me": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User login.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid username/password supplied"
+                    }
+                }
+            }
+        },
+        "/auth/user": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "The login user",
+                "operationId": "theUser",
+                "responses": {
+                    "200": {
+                        "description": "User login.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/auth/logout": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Logout user",
+                "description": "Logout user, revoke the token",
+                "operationId": "logoutUser",
+                "responses": {
+                    "200": {
+                        "description": "Successfully logged out."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/auth/password/create": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Send password reset token",
+                "description": "Send password reset token on email.",
+                "operationId": "SendPassUserReset",
+                "requestBody": {
+                    "description": "User email",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "title": "User email",
+                                "description": "User email account",
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "azyav4ikoff@yandex.by"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "We have e-mailed your password reset link!"
+                    },
+                    "404": {
+                        "description": "We can't find a user with that e-mail address."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/auth/password/find/{token}": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Find password reset token",
+                "operationId": "findToken",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "path",
+                        "description": "Reset password email token",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tokken is valid"
+                    },
+                    "404": {
+                        "description": "This password reset token is invalid."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/auth/password/reset": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Password reset",
+                "description": "User password reset",
+                "operationId": "passUserReset",
+                "requestBody": {
+                    "description": "User email",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "title": "User pass reset",
+                                "description": "User password reset",
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "azyav4ikoff@yandex.by"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "123478569"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "example": "123478569"
+                                    },
+                                    "token": {
+                                        "type": "string",
+                                        "example": "2m2OfZXLacYl4YKWKsZuXCv0lhVW8MFBNi1agv4MVSrApQCu16czxif6dUqH"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "The user password reset"
+                    },
+                    "404": {
+                        "description": "We can't find a user with that e-mail address."
+                    },
+                    "408": {
+                        "description": "This password reset token is invalid."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "User": {
+                "title": "User model",
+                "description": "Model user account",
+                "properties": {
+                    "id": {
+                        "type": "bigIncrements",
+                        "example": "1"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "fobas2"
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "azyav4ikoff@yandex.by"
+                    },
+                    "avatar": {
+                        "type": "string",
+                        "example": "avatar.png"
+                    },
+                    "active": {
+                        "type": "boolean",
+                        "example": "0"
+                    },
+                    "profile": {
+                        "type": "boolean",
+                        "example": "0"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "name": "bearerAuth",
+                "in": "header",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "Some example pages"
+        }
+    ]
+}
